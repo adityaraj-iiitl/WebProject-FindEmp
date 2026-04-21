@@ -8,6 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the application
+RUN chmod +x mvnw
 RUN ./mvnw clean install -DskipTests
 
 # Run the jar file
