@@ -1,6 +1,5 @@
 # Secrets
 application-secrets.properties
-application.properties
 .env
 
 HELP.md
