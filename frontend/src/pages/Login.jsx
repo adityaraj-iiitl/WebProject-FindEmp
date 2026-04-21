@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -8,7 +8,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/users/login', formData)
+    api.post('/users/login', formData)
       .then(res => {
         if (res.data) {
           localStorage.setItem('user', JSON.stringify(res.data));

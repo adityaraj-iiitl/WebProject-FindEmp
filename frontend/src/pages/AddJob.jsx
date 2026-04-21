@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/config';
 
 const AddJob = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const AddJob = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/jobs', formData)
+    api.post('/jobs', formData)
       .then(() => {
         alert("Job posted successfully!");
         navigate('/');

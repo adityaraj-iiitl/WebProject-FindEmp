@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import JobCard from '../components/JobCard';
-import axios from 'axios';
+import api from '../api/config';
 
 const Home = () => {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/jobs')
+    api.get('/jobs')
       .then(res => setJobs(res.data))
       .catch(err => console.log(err));
   }, []);

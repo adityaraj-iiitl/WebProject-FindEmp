@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import api from '../api/config';
 
 const JobCard = ({ job }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -15,7 +15,7 @@ const JobCard = ({ job }) => {
       user: { id: user.id }
     };
 
-    axios.post('http://localhost:8080/api/applications/apply', application)
+    api.post('/applications/apply', application)
       .then(() => alert("Applied Successfully!"))
       .catch(err => console.log(err));
   };
