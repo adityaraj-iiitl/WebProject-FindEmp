@@ -1,14 +1,15 @@
-# Use an official JDK runtime as a parent image
+# Use an official JDK runtime
 FROM eclipse-temurin:21-jdk-alpine
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the pom.xml and source code
-COPY . .
+# Copy the backend folder contents
+COPY backend/ .
+
+# Fix permissions for the Maven wrapper
+RUN chmod +x mvnw
 
 # Build the application
-RUN chmod +x mvnw
 RUN ./mvnw clean install -DskipTests
 
 # Run the jar file
