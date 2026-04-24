@@ -19,6 +19,8 @@ public class Job {
     private String location;
     private String salary;
     private String description;
+    private Long recruiterId; // New: track who posted the job
+    private int views; // Track how many times the job was viewed
 
     public Job() {}
 
@@ -47,4 +49,10 @@ public class Job {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public Long getRecruiterId() { return recruiterId; }
+    public void setRecruiterId(Long recruiterId) { this.recruiterId = recruiterId; }
+
+    public int getViews() { return views; }
+    public void setViews(int views) { this.views = views; }
 }

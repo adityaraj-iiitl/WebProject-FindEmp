@@ -20,4 +20,8 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .filter(u -> u.getPassword().equals(password));
     }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }
