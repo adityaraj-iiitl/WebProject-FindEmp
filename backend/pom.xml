@@ -11,7 +11,7 @@
 	<groupId>empfind-backend</groupId>
 	<artifactId>empFind</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>FindEmp</name>
 	<description/>
 	<url/>
@@ -63,7 +63,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
