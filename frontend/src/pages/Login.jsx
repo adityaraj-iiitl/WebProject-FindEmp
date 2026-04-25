@@ -17,7 +17,11 @@ const Login = () => {
       .then(res => {
         if (res.data) {
           localStorage.setItem('user', JSON.stringify(res.data));
-          navigate('/');
+          if (res.data.role === 'RECRUITER') {
+            navigate('/recruiter');
+          } else {
+            navigate('/');
+          }
         } else {
           alert("Invalid Credentials!");
         }

@@ -33,6 +33,9 @@ const Navbar = () => {
         <div className="hidden items-center gap-6 md:flex">
           <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Browse Jobs</Link>
           <Link to="/companies" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Companies</Link>
+          {user?.role === 'RECRUITER' && (
+            <Link to="/recruiter" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Recruiter Panel</Link>
+          )}
           <Link to="/add-job" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Post a Job</Link>
         </div>
 

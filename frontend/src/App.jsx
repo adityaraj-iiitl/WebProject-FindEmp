@@ -10,6 +10,7 @@ import AIChatbot from './components/AIChatbot';
 import Companies from './pages/Companies';
 import CompanyDetail from './pages/CompanyDetail';
 import Profile from './pages/Profile';
+import RecruiterDashboard from './components/RecruiterDashboard';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/recruiter" element={<RecruiterDashboard />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/company/:name" element={<CompanyDetail />} />
           <Route path="/add-job" element={<AddJob />} />
