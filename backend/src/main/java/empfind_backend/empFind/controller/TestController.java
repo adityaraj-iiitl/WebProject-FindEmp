@@ -6,11 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    @GetMapping("/")
-    public String home() {
-        return "FindEmp Backend is Running!";
-    }
-
     @GetMapping("/test")
     public String test() {
         return "Backend is working";

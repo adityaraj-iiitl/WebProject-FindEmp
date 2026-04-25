@@ -4,7 +4,15 @@ import { Button } from "@/components/ui/button"
 import { Briefcase, User, LogOut, Search } from "lucide-react"
 
 const Navbar = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const getUser = () => {
+    try {
+      const saved = localStorage.getItem('user');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  };
+  const user = getUser();
   const navigate = useNavigate();
 
   const handleLogout = () => {
