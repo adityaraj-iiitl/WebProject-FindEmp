@@ -1,69 +1,52 @@
-# FindEmp - Job Portal Project
+FindEmp – Job Portal Project
 
-FindEmp is a full-stack web application designed to connect job seekers with recruiters. Users can browse available jobs, create accounts, and apply for positions instantly.
+FindEmp is a full-stack web application built to connect job seekers with recruiters. It allows users to browse job listings, create accounts, and apply for jobs in a simple and efficient way.
 
-## 🚀 Tech Stack
+Tech Stack
+Frontend
+React (Vite) – Used for building a fast and responsive UI
+React Router – Handles navigation between pages without reloads
+Axios – Used to communicate with the backend APIs
+CSS3 – Custom styling for a clean and professional interface
+Backend
+Spring Boot – Core framework powering the backend
+Spring Data JPA – Simplifies database operations
+MySQL – Stores users, jobs, and applications
+Maven – Dependency management and build tool
+Getting Started (Team Setup)
+1. Database Setup
 
-### Frontend
-- **React (Vite)**: For a fast and modern user interface.
-- **React Router**: Handles page navigation without reloading.
-- **Axios**: Used to talk to our Spring Boot backend.
-- **CSS3**: Custom premium styling with a clean, professional look.
+Make sure MySQL is installed and running. Then create the database:
 
-### Backend
-- **Spring Boot 4.0.5**: The backbone of our application.
-- **Spring Data JPA**: Handles all our database operations easily.
-- **MySQL**: To store jobs, user accounts, and applications securely.
-- **Maven**: For managing project dependencies.
+CREATE DATABASE findemp_db;
+2. Backend Configuration
+Navigate to the backend folder
+Copy application.properties.example and rename it to application.properties
+Add your MySQL credentials:
+spring.datasource.username=YOUR_USERNAME
+spring.datasource.password=YOUR_PASSWORD
 
----
+This file is not tracked by Git, so your credentials remain private.
 
-## 🛠️ Getting Started (For Team Members)
+3. Running the Project
 
-### 1. Database Setup
-1. Make sure you have **MySQL** installed and running.
-2. Open your MySQL terminal or Workbench and create the database:
-   ```sql
-   CREATE DATABASE findemp_db;
-   ```
+Open two terminals:
 
-### 2. Backend Configuration
-1. Go to the `backend` folder.
-2. Find `application.properties.example`.
-3. **Copy and Rename** it to `application.properties`.
-4. Open the new `application.properties` and enter your MySQL username and password:
-   ```properties
-   spring.datasource.username=YOUR_USERNAME
-   spring.datasource.password=YOUR_PASSWORD
-   ```
-   *(Note: This file is ignored by Git, so your password will never be shared!)*
+Terminal 1 – Backend
 
-### 3. Running the Project
-You need two terminals open:
-
-**Terminal 1: Backend**
-```bash
 cd backend
 ./mvnw spring-boot:run
-```
 
-**Terminal 2: Frontend**
-```bash
+Terminal 2 – Frontend
+
 cd frontend
 npm install
 npm run dev
-```
+Project Structure
+frontend/src/pages – Main pages like Home, Login, Register, AddJob
+frontend/src/components – Reusable UI components (Navbar, JobCards, etc.)
+backend/src/main/java/.../entity – Data models (User, Job, Application)
+backend/src/main/java/.../controller – API endpoints
+Security Note
 
----
-
-## 📂 Project Structure
-
-- `frontend/src/pages`: Contains Home, Login, Register, and AddJob pages.
-- `frontend/src/components`: Reusable UI elements like Navbar and JobCards.
-- `backend/src/main/java/.../entity`: Data models (Job, User, Application).
-- `backend/src/main/java/.../controller`: API endpoints that the frontend calls.
-
----
-
-## 🔐 Security Notice
-We use a `.gitignore` file to ensure that local configuration files like `application.properties` and `node_modules` are not pushed to GitHub. Always use the `.example` files when sharing configuration templates with the team.
+Sensitive files like application.properties and node_modules are excluded using .gitignore. Always use .example files when sharing configurations with others.
