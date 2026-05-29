@@ -20,7 +20,7 @@ public class JobApplication {
     @Column(columnDefinition = "TEXT")
     private String coverLetter;
     
-    private String status = "PENDING"; // PENDING, ACCEPTED, REJECTED
+    private String status = "PENDING";
     private LocalDateTime timestamp = LocalDateTime.now();
 
     public JobApplication() {}

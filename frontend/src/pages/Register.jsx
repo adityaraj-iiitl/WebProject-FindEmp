@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../api/config';
+import { authService } from '../services/authService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,12 +18,14 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    api.post('/users/register', formData)
+    authService.register(formData)
       .then(res => {
         alert("Registration Successful! Please Login.");
         navigate('/login');
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        alert(err.message || "Registration failed. Please try again.");
+      });
   };
 
   return (

@@ -25,6 +25,9 @@ public class ChatService {
     @Value("${openrouter.api.key}")
     private String apiKey;
 
+    @Value("${openrouter.referer:http://localhost:5173}")
+    private String referer;
+
     private final String OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -33,10 +36,9 @@ public class ChatService {
             chatMessageRepository.save(new ChatMessage(userEmail, userMessage, "user"));
         }
 
-        // Get a brief catalog of all available jobs to give the AI general knowledge
         List<Job> allJobs = jobRepository.findAll();
         String jobCatalog = allJobs.stream()
-                .limit(10) // Limit to 10 for context window efficiency
+                .limit(10)
                 .map(j -> j.getTitle() + " at " + j.getCompany())
                 .collect(Collectors.joining(", "));
 
@@ -86,15 +88,11 @@ public class ChatService {
         for (String word : keywords) {
             String cleanWord = word.replaceAll("[^a-zA-Z0-9]", "");
             if (cleanWord.length() > 2) {
-                // Search by title or description
                 jobs.addAll(jobRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(cleanWord, cleanWord));
-                // Search by company
                 jobs.addAll(jobRepository.findByCompany(cleanWord));
-                // Search by location (we'll use a stream filter for this since repo doesn't have a specific combined method yet)
             }
         }
         
-        // Final pass for location matching
         String lowerMessage = message.toLowerCase();
         List<Job> allJobs = jobRepository.findAll();
         for (Job j : allJobs) {
@@ -111,7 +109,7 @@ public class ChatService {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + apiKey);
-            headers.set("HTTP-Referer", "http://localhost:5173"); // Required by OpenRouter
+            headers.set("HTTP-Referer", referer);
             headers.set("X-Title", "FindEmp Job Portal");
 
             Map<String, Object> requestBody = new HashMap<>();

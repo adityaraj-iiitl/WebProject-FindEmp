@@ -3,16 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import api from '../api/config';
+import { dashboardService } from '../services/dashboardService';
 import {
-  Briefcase,
   Eye,
   Send,
   CheckCircle2,
   TrendingUp,
   Calendar,
   Star,
-  ArrowUpRight,
   FileText,
 } from "lucide-react"
 
@@ -29,13 +27,19 @@ export function DashboardSection() {
 
   useEffect(() => {
     if (user && user.id) {
-      api.get(`/dashboard/stats/${user.id}`)
-        .then(res => {
-          setStats(res.data);
+      dashboardService.getDashboardStats(user.id, user.role)
+        .then(data => {
+          setStats(data || {
+            applicationsSent: 0,
+            profileViews: 0,
+            interviewsScheduled: 0,
+            savedJobs: 0,
+            recentApplications: []
+          });
           setLoading(false);
         })
         .catch(err => {
-          console.error(err);
+          alert(err.message || "Failed to load dashboard stats.");
           setLoading(false);
         });
     }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Chatbot.css';
+import { chatService } from '../services/chatService';
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,27 +34,22 @@ const Chatbot = () => {
 
     try {
       const user = JSON.parse(localStorage.getItem('user'));
-      const response = await fetch('https://webproject-findemp-production.up.railway.app/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: messageText,
-          userEmail: user?.email || null 
-        }),
-      });
-
-      const data = await response.json();
+      const data = await chatService.sendChatMessage(messageText, user?.email || '');
       
       const assistantMessage = { 
         role: 'assistant', 
-        content: data.answer,
-        jobs: data.recommendedJobs,
-        suggestions: data.followUpSuggestions
+        content: data.answer || 'I am sorry, I did not receive a response from my AI agent. Please try again.',
+        jobs: data.recommendedJobs || [],
+        suggestions: data.followUpSuggestions || []
       };
       
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I\'m having trouble connecting. Please try again later.' }]);
+      console.error('Chatbot API communication error:', error);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: `Sorry, I am having trouble connecting (${error.message || 'Network error'}). Please ensure the backend server is live and reachable.` 
+      }]);
     } finally {
       setIsLoading(false);
     }

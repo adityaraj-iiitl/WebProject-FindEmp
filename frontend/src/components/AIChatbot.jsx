@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { chatService } from '../services/chatService';
 import { MessageCircle, X, Send, Sparkles, Bot, User } from "lucide-react"
 
 const AIChatbot = () => {
@@ -36,16 +37,7 @@ const AIChatbot = () => {
 
     try {
       const user = JSON.parse(localStorage.getItem('user'));
-      const response = await fetch('https://webproject-findemp-production.up.railway.app/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: messageText,
-          userEmail: user?.email || null 
-        }),
-      });
-
-      const data = await response.json();
+      const data = await chatService.sendChatMessage(messageText, user?.email || '');
       
       const assistantMessage = { 
         role: 'assistant', 

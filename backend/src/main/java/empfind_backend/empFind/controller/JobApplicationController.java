@@ -1,46 +1,43 @@
 package empfind_backend.empFind.controller;
 
 import empfind_backend.empFind.entity.JobApplication;
-import empfind_backend.empFind.repository.JobApplicationRepository;
+import empfind_backend.empFind.service.JobApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/applications")
-@CrossOrigin(origins = "*")
 public class JobApplicationController {
 
     @Autowired
-    private JobApplicationRepository applicationRepository;
+    private JobApplicationService applicationService;
 
     @PostMapping
-    public JobApplication apply(@RequestBody JobApplication application) {
-        return applicationRepository.save(application);
+    public ResponseEntity<JobApplication> apply(@RequestBody JobApplication application) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(applicationService.apply(application));
     }
 
     @GetMapping("/applicant/{applicantId}")
-    public List<JobApplication> getByApplicant(@PathVariable Long applicantId) {
-        return applicationRepository.findByApplicantId(applicantId);
+    public ResponseEntity<List<JobApplication>> getByApplicant(@PathVariable Long applicantId) {
+        return ResponseEntity.ok(applicationService.getByApplicant(applicantId));
     }
 
     @GetMapping("/recruiter/{recruiterId}")
-    public List<JobApplication> getByRecruiter(@PathVariable Long recruiterId) {
-        return applicationRepository.findByRecruiterId(recruiterId);
+    public ResponseEntity<List<JobApplication>> getByRecruiter(@PathVariable Long recruiterId) {
+        return ResponseEntity.ok(applicationService.getByRecruiter(recruiterId));
     }
-    
+
     @GetMapping("/job/{jobId}")
-    public List<JobApplication> getByJob(@PathVariable Long jobId) {
-        return applicationRepository.findByJobId(jobId);
+    public ResponseEntity<List<JobApplication>> getByJob(@PathVariable Long jobId) {
+        return ResponseEntity.ok(applicationService.getByJob(jobId));
     }
 
     @PutMapping("/{id}/status")
-    public JobApplication updateStatus(@PathVariable Long id, @RequestParam String status) {
-        JobApplication app = applicationRepository.findById(id).orElse(null);
-        if (app != null) {
-            app.setStatus(status);
-            return applicationRepository.save(app);
-        }
-        return null;
+    public ResponseEntity<JobApplication> updateStatus(@PathVariable Long id, @RequestParam String status) {
+        return ResponseEntity.ok(applicationService.updateStatus(id, status));
     }
 }

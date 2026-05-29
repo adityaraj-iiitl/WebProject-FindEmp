@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../api/config';
+import { authService } from '../services/authService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,11 +13,11 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    api.post('/users/login', formData)
-      .then(res => {
-        if (res.data) {
-          localStorage.setItem('user', JSON.stringify(res.data));
-          if (res.data.role === 'RECRUITER') {
+    authService.login(formData)
+      .then(user => {
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          if (user.role === 'RECRUITER') {
             navigate('/recruiter');
           } else {
             navigate('/');
@@ -26,7 +26,9 @@ const Login = () => {
           alert("Invalid Credentials!");
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        alert(err.message || "Invalid Credentials!");
+      });
   };
 
   return (

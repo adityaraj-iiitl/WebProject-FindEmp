@@ -54,10 +54,8 @@ public class JobService {
     }
 
     public List<Job> getJobsByRecruiter(Long recruiterId) {
-        // Use a mutable list to avoid UnsupportedOperationException
         List<Job> jobs = new ArrayList<>(jobRepository.findByRecruiterId(recruiterId));
         
-        // Also fetch jobs that match the recruiter's company names but have no recruiterId
         List<String> companyNames = companyRepository.findByRecruiterId(recruiterId)
                 .stream()
                 .map(c -> c.getName())
@@ -69,11 +67,9 @@ public class JobService {
                     .filter(j -> j.getRecruiterId() == null && companyNames.contains(j.getCompany()))
                     .collect(Collectors.toList());
             
-            // Repair data: save recruiterId to these jobs so applications can also find them
             for (Job lj : legacyJobs) {
                 lj.setRecruiterId(recruiterId);
                 jobRepository.save(lj);
-                // Only add if not already in the list
                 if (jobs.stream().noneMatch(j -> j.getId().equals(lj.getId()))) {
                     jobs.add(lj);
                 }

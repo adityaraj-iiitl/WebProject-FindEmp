@@ -1,50 +1,27 @@
 package empfind_backend.empFind.controller;
 
-import empfind_backend.empFind.entity.Job;
 import empfind_backend.empFind.entity.SavedJob;
-import empfind_backend.empFind.entity.User;
-import empfind_backend.empFind.repository.JobRepository;
-import empfind_backend.empFind.repository.SavedJobRepository;
-import empfind_backend.empFind.repository.UserRepository;
+import empfind_backend.empFind.service.SavedJobService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/saved-jobs")
-@CrossOrigin(origins = "*")
 public class SavedJobController {
 
     @Autowired
-    private SavedJobRepository savedJobRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private JobRepository jobRepository;
+    private SavedJobService savedJobService;
 
     @PostMapping("/toggle")
-    public String toggleSaveJob(@RequestParam Long userId, @RequestParam Long jobId) {
-        Optional<SavedJob> existing = savedJobRepository.findByUserIdAndJobId(userId, jobId);
-        if (existing.isPresent()) {
-            savedJobRepository.delete(existing.get());
-            return "UNSAVED";
-        } else {
-            Optional<User> user = userRepository.findById(userId);
-            Optional<Job> job = jobRepository.findById(jobId);
-            if (user.isPresent() && job.isPresent()) {
-                savedJobRepository.save(new SavedJob(user.get(), job.get()));
-                return "SAVED";
-            }
-            return "ERROR";
-        }
+    public ResponseEntity<String> toggleSaveJob(@RequestParam Long userId, @RequestParam Long jobId) {
+        return ResponseEntity.ok(savedJobService.toggleSaveJob(userId, jobId));
     }
 
     @GetMapping("/{userId}")
-    public List<SavedJob> getSavedJobs(@PathVariable Long userId) {
-        return savedJobRepository.findByUserId(userId);
+    public ResponseEntity<List<SavedJob>> getSavedJobs(@PathVariable Long userId) {
+        return ResponseEntity.ok(savedJobService.getSavedJobs(userId));
     }
 }

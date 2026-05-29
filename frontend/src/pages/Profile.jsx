@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import api from '../api/config';
+import { authService } from '../services/authService';
+import { dashboardService } from '../services/dashboardService';
 import { 
   User, 
   Mail, 
@@ -63,24 +64,23 @@ const Profile = () => {
   useEffect(() => {
     document.title = "FindEmp | Profile";
     if (user && user.id) {
-      // Fetch full user data and stats
       Promise.all([
-        api.get(`/users/${user.id}`),
-        api.get(`/dashboard/stats/${user.id}?role=${user.role}`)
-      ]).then(([userRes, statsRes]) => {
-        setUser(userRes.data);
-        localStorage.setItem('user', JSON.stringify(userRes.data));
-        setStats(statsRes.data);
+        authService.getUserProfile(user.id),
+        dashboardService.getDashboardStats(user.id, user.role)
+      ]).then(([userData, statsData]) => {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setStats(statsData);
         setFormData({
-          title: userRes.data.title || '',
-          bio: userRes.data.bio || '',
-          skills: userRes.data.skills || '',
-          resumeUrl: userRes.data.resumeUrl || '',
-          profilePicUrl: userRes.data.profilePicUrl || ''
+          title: userData.title || '',
+          bio: userData.bio || '',
+          skills: userData.skills || '',
+          resumeUrl: userData.resumeUrl || '',
+          profilePicUrl: userData.profilePicUrl || ''
         });
         setLoading(false);
       }).catch(err => {
-        console.error(err);
+        alert(err.message || "Failed to load profile.");
         setLoading(false);
       });
     }
@@ -99,16 +99,17 @@ const Profile = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    api.put(`/users/profile/${user.id}`, formData)
-      .then(res => {
-        const updatedUser = res.data;
+    authService.updateUserProfile(user.id, formData)
+      .then(updatedUser => {
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
         setIsEditing(false);
         setMessage('Profile updated successfully!');
         setTimeout(() => setMessage(''), 3000);
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        alert(err.message || "Failed to update profile.");
+      });
   };
 
   const completionRate = () => {

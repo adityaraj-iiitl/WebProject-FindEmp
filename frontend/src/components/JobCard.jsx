@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api/config';
+import { jobService } from '../services/jobService';
+import { savedJobService } from '../services/savedJobService';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Clock, DollarSign, Building2, Star, CheckCircle2 } from "lucide-react"
+import { MapPin, DollarSign, Building2, Star } from "lucide-react"
 import ApplyModal from './ApplyModal';
 
 const JobCard = ({ job }) => {
@@ -11,10 +12,9 @@ const JobCard = ({ job }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Only increment views if viewed by a Seeker or guest, NOT the Recruiter
     if (!user || user.role !== 'RECRUITER') {
-      api.post(`/jobs/${job.id}/view`)
-        .catch(err => console.error("Error incrementing views:", err));
+      jobService.incrementJobViews(job.id)
+        .catch(() => {});
     }
   }, [job.id, user?.role]);
 
@@ -30,6 +30,20 @@ const JobCard = ({ job }) => {
     setIsModalOpen(true);
   };
 
+  const handleSaveToggle = () => {
+    if (!user) {
+      alert("Please login to save jobs!");
+      return;
+    }
+    savedJobService.toggleSavedJob(user.id, job.id)
+      .then(status => {
+        alert(status === 'SAVED' ? "Job Saved!" : "Job Removed!");
+      })
+      .catch(err => {
+        alert(err.message || "Failed to update saved job.");
+      });
+  };
+
   return (
     <>
       <Card className="group overflow-hidden transition-all hover:border-primary/50 hover:shadow-lg">
@@ -43,11 +57,7 @@ const JobCard = ({ job }) => {
                 variant="ghost" 
                 size="icon" 
                 className="h-8 w-8 text-muted-foreground hover:text-primary"
-                onClick={() => {
-                  if(!user) return alert("Please login to save jobs!");
-                  api.post(`/saved-jobs/toggle?userId=${user.id}&jobId=${job.id}`)
-                    .then(res => alert(res.data === 'SAVED' ? "Job Saved!" : "Job Removed!"))
-                }}
+                onClick={handleSaveToggle}
               >
                 <Star className="h-5 w-5" />
               </Button>

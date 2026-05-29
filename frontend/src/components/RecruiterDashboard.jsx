@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import api from '../api/config';
+import { authService } from '../services/authService';
+import { jobService } from '../services/jobService';
+import { companyService } from '../services/companyService';
+import { applicationService } from '../services/applicationService';
+import { dashboardService } from '../services/dashboardService';
 import { Building2, Plus, Users, Briefcase, Settings, ArrowRight, FileText, Eye, User } from "lucide-react"
 
 const RecruiterDashboard = () => {
@@ -34,137 +38,124 @@ const RecruiterDashboard = () => {
 
   const fetchData = () => {
     if (!user || !user.id) {
-      console.warn("User data not available for fetching stats");
       return;
     }
     
-    console.log("Fetching data for user:", user.id);
-
-    // Use individual catches so one failure doesn't block others
-    api.get(`/companies/recruiter/${user.id}`)
-      .then(res => {
-        console.log("Companies fetched:", res.data.length);
-        setCompanies(res.data);
+    companyService.getCompaniesByRecruiter(user.id)
+      .then(data => {
+        setCompanies(data || []);
       })
-      .catch(err => console.error("Error fetching companies:", err));
+      .catch(err => alert(err.message || "Error fetching companies"));
 
-    api.get(`/applications/recruiter/${user.id}`)
-      .then(res => {
-        console.log("Applications fetched:", res.data.length);
-        setApplications(res.data);
+    applicationService.getApplicationsByRecruiter(user.id)
+      .then(data => {
+        setApplications(data || []);
       })
-      .catch(err => console.error("Error fetching applications:", err));
+      .catch(err => alert(err.message || "Error fetching applications"));
 
-    api.get(`/jobs/recruiter/${user.id}`)
-      .then(res => {
-        console.log("Jobs fetched:", res.data.length);
-        setJobs(res.data);
+    jobService.getJobsByRecruiter(user.id)
+      .then(data => {
+        setJobs(data || []);
       })
-      .catch(err => console.error("Error fetching jobs:", err));
+      .catch(err => alert(err.message || "Error fetching jobs"));
 
-    api.get(`/dashboard/stats/${user.id}?role=RECRUITER`)
-      .then(res => {
-        console.log("Stats fetched:", res.data);
-        setStats(res.data);
+    dashboardService.getDashboardStats(user.id, 'RECRUITER')
+      .then(data => {
+        setStats(data || { totalApplicants: 0, activeJobs: 0, companiesManaged: 0 });
         setLoading(false);
       })
       .catch(err => {
-        console.error("Error fetching stats:", err);
+        alert(err.message || "Error fetching stats");
         setLoading(false);
       });
   };
 
   const updateAppStatus = (appId, status) => {
-    api.put(`/applications/${appId}/status?status=${status}`)
+    applicationService.updateApplicationStatus(appId, status)
       .then(() => fetchData())
-      .catch(err => console.error(err));
+      .catch(err => alert(err.message || "Error updating status"));
   };
 
   const handleAddCompany = (e) => {
     e.preventDefault();
-    api.post('/companies', { ...newCompany, recruiterId: user.id })
+    companyService.createCompany({ ...newCompany, recruiterId: user.id })
       .then(() => {
         setShowAddCompany(false);
         setNewCompany({ name: '', location: '', description: '' });
         fetchData();
       })
-      .catch(err => console.error(err));
+      .catch(err => alert(err.message || "Error creating company"));
   };
 
   const handleUpdateCompany = (e) => {
     e.preventDefault();
-    api.put(`/companies/${editingCompany.id}`, editingCompany)
+    companyService.updateCompany(editingCompany.id, editingCompany)
       .then(() => {
         setShowEditCompany(false);
         setEditingCompany(null);
         fetchData();
       })
-      .catch(err => console.error(err));
+      .catch(err => alert(err.message || "Error updating company"));
   };
 
   const handleUpdateJob = (e) => {
     e.preventDefault();
-    api.put(`/jobs/${editingJob.id}`, editingJob)
+    jobService.updateJob(editingJob.id, editingJob)
       .then(() => {
         setShowEditJob(false);
         setEditingJob(null);
         fetchData();
       })
-      .catch(err => console.error(err));
+      .catch(err => alert(err.message || "Error updating job"));
   };
 
   const handleDeleteJob = (jobId) => {
     if (window.confirm("Are you sure you want to close this job listing? This will remove it from the platform.")) {
-      api.delete(`/jobs/${jobId}`)
+      jobService.deleteJob(jobId)
         .then(() => fetchData())
-        .catch(err => console.error(err));
+        .catch(err => alert(err.message || "Error deleting job"));
     }
   };
 
   const viewJobDetails = (job) => {
     setSelectedJob(job);
-    api.get(`/applications/job/${job.id}`)
-      .then(res => {
-        setJobApps(res.data);
+    applicationService.getApplicationsByJob(job.id)
+      .then(data => {
+        setJobApps(data || []);
         setShowJobDetails(true);
       })
-      .catch(err => console.error(err));
+      .catch(err => alert(err.message || "Error fetching applications"));
   };
 
   const handleViewApplicant = (applicantId, resumeUrl) => {
-    // Increment the applicant's profile views in the backend
-    api.post(`/users/${applicantId}/view`)
-      .catch(err => console.error("Error incrementing profile views:", err));
+    authService.incrementProfileViews(applicantId)
+      .catch(() => {});
     
-    // Open the resume in a new tab
     if (resumeUrl) {
       window.open(resumeUrl, '_blank', 'noreferrer');
     }
   };
 
   const viewApplicantProfile = (applicantId) => {
-    api.get(`/users/${applicantId}`)
-      .then(res => {
-        setViewingApplicant(res.data);
+    authService.getUserProfile(applicantId)
+      .then(data => {
+        setViewingApplicant(data);
         setShowApplicantProfile(true);
-        // Also increment views since the recruiter is looking at the profile
-        api.post(`/users/${applicantId}/view`)
-          .catch(err => console.error(err));
+        authService.incrementProfileViews(applicantId)
+          .catch(() => {});
       })
-      .catch(err => console.error("Error fetching applicant profile:", err));
+      .catch(err => alert(err.message || "Error fetching applicant profile"));
   };
 
   const handleUpdateProfile = (e) => {
     e.preventDefault();
-    api.put(`/users/profile/${user.id}`, { ...user, profilePicUrl })
-      .then(res => {
-        const updatedUser = res.data;
+    authService.updateUserProfile(user.id, { ...user, profilePicUrl })
+      .then(updatedUser => {
         localStorage.setItem('user', JSON.stringify(updatedUser));
         setShowEditProfile(false);
-        // We don't need to reload everything, just the local state if needed
-        window.location.reload(); // Refresh to update all references to user
+        window.location.reload();
       })
-      .catch(err => console.error(err));
+      .catch(err => alert(err.message || "Error updating profile photo"));
   };
 
   if (!user) return null;

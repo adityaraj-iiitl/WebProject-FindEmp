@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import api from '../api/config';
+import { applicationService } from '../services/applicationService';
 import { Send, X, FileText, CheckCircle } from "lucide-react"
 
 const ApplyModal = ({ job, onClose }) => {
@@ -25,14 +25,14 @@ const ApplyModal = ({ job, onClose }) => {
       status: 'PENDING'
     };
 
-    api.post('/applications', applicationData)
+    applicationService.applyToJob(applicationData)
       .then(() => {
         setSubmitted(true);
         setLoading(false);
         setTimeout(() => onClose(), 2000);
       })
       .catch(err => {
-        console.error(err);
+        alert(err.message || "Failed to submit application.");
         setLoading(false);
       });
   };

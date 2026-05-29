@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import api from '../api/config';
+import { companyService } from '../services/companyService';
+import { jobService } from '../services/jobService';
 import { Briefcase, Send, Building2, MapPin, DollarSign } from "lucide-react"
 
 const AddJob = () => {
@@ -27,25 +28,28 @@ const AddJob = () => {
       return;
     }
 
-    // Fetch recruiter's companies to select from
-    api.get(`/companies/recruiter/${user.id}`)
-      .then(res => {
-        setCompanies(res.data);
-        if (res.data.length > 0) {
-          setFormData(prev => ({ ...prev, company: res.data[0].name, location: res.data[0].location }));
+    companyService.getCompaniesByRecruiter(user.id)
+      .then(data => {
+        setCompanies(data || []);
+        if (data && data.length > 0) {
+          setFormData(prev => ({ ...prev, company: data[0].name, location: data[0].location }));
         }
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        alert(err.message || "Failed to load companies.");
+      });
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    api.post('/jobs', formData)
+    jobService.createJob(formData)
       .then(() => {
         alert("Job posted successfully!");
         navigate('/profile');
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        alert(err.message || "Failed to post job.");
+      });
   };
 
   return (

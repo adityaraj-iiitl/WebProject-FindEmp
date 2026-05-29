@@ -19,8 +19,8 @@ public class Job {
     private String location;
     private String salary;
     private String description;
-    private Long recruiterId; // New: track who posted the job
-    private int views; // Track how many times the job was viewed
+    private Long recruiterId;
+    private int views;
 
     public Job() {}
 

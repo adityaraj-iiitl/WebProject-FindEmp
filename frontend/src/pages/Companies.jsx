@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Building2, ArrowRight, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import api from '../api/config';
+import { companyService } from '../services/companyService';
 
 const Companies = () => {
   const [companies, setCompanies] = useState([]);
@@ -11,13 +11,13 @@ const Companies = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/companies')
-      .then(res => {
-        setCompanies(res.data);
+    companyService.getAllCompanies()
+      .then(data => {
+        setCompanies(data || []);
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        alert(err.message || "Failed to load companies.");
         setLoading(false);
       });
   }, []);
@@ -44,7 +44,9 @@ const Companies = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-20">Loading companies...</div>
+        <div className="flex justify-center items-center py-20 w-full">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredCompanies.map((company, index) => (

@@ -13,12 +13,12 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String role; // e.g., "APPLICANT" or "RECRUITER"
+    private String role;
     
-    private String title; // e.g., "Senior Software Engineer"
+    private String title;
     @Column(columnDefinition = "TEXT")
     private String bio;
-    private String skills; // comma-separated or JSON
+    private String skills;
     private String resumeUrl;
     @Column(columnDefinition = "LONGTEXT")
     private String profilePicUrl;

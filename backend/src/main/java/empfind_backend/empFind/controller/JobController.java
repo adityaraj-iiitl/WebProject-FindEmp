@@ -1,80 +1,91 @@
 package empfind_backend.empFind.controller;
 
 import empfind_backend.empFind.entity.Job;
+import empfind_backend.empFind.exception.ResourceNotFoundException;
 import empfind_backend.empFind.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/jobs")
-@CrossOrigin(origins = "*")
 public class JobController {
 
     @Autowired
     private JobService jobService;
 
     @GetMapping
-    public List<Job> getJobs() {
-        return jobService.getAllJobs();
+    public ResponseEntity<List<Job>> getJobs() {
+        return ResponseEntity.ok(jobService.getAllJobs());
     }
 
     @PostMapping
-    public Job createJob(@RequestBody Job job) {
-        return jobService.saveJob(job);
+    public ResponseEntity<Job> createJob(@RequestBody Job job) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(jobService.saveJob(job));
     }
 
     @GetMapping("/{id}")
-    public Job getJob(@PathVariable Long id) {
-        return jobService.getJobById(id);
+    public ResponseEntity<Job> getJob(@PathVariable Long id) {
+        Job job = jobService.getJobById(id);
+        if (job == null) {
+            throw new ResourceNotFoundException("Job not found with id: " + id);
+        }
+        return ResponseEntity.ok(job);
     }
 
     @GetMapping("/search")
-    public List<Job> searchJobs(
+    public ResponseEntity<List<Job>> searchJobs(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String location) {
-        return jobService.searchJobs(keyword, location);
+        return ResponseEntity.ok(jobService.searchJobs(keyword, location));
     }
 
     @GetMapping("/companies")
-    public List<String> getCompanies() {
-        return jobService.getUniqueCompanies();
+    public ResponseEntity<List<String>> getCompanies() {
+        return ResponseEntity.ok(jobService.getUniqueCompanies());
     }
 
     @GetMapping("/company/{name}")
-    public List<Job> getJobsByCompany(@PathVariable String name) {
-        return jobService.getJobsByCompany(name);
+    public ResponseEntity<List<Job>> getJobsByCompany(@PathVariable String name) {
+        return ResponseEntity.ok(jobService.getJobsByCompany(name));
     }
 
     @GetMapping("/recruiter/{recruiterId}")
-    public List<Job> getJobsByRecruiter(@PathVariable Long recruiterId) {
-        return jobService.getJobsByRecruiter(recruiterId);
+    public ResponseEntity<List<Job>> getJobsByRecruiter(@PathVariable Long recruiterId) {
+        return ResponseEntity.ok(jobService.getJobsByRecruiter(recruiterId));
     }
-    
+
     @PutMapping("/{id}")
-    public Job updateJob(@PathVariable Long id, @RequestBody Job job) {
+    public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestBody Job job) {
         Job existing = jobService.getJobById(id);
-        if (existing != null) {
-            job.setId(id);
-            return jobService.saveJob(job);
+        if (existing == null) {
+            throw new ResourceNotFoundException("Job not found with id: " + id);
         }
-        return null;
+        job.setId(id);
+        return ResponseEntity.ok(jobService.saveJob(job));
     }
-    
+
     @DeleteMapping("/{id}")
-    public void deleteJob(@PathVariable Long id) {
-        // Here we could add a check to make sure the recruiter owns the job
-        // For simplicity, we'll just delete it
+    public ResponseEntity<Void> deleteJob(@PathVariable Long id) {
+        Job existing = jobService.getJobById(id);
+        if (existing == null) {
+            throw new ResourceNotFoundException("Job not found with id: " + id);
+        }
         jobService.deleteJob(id);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/view")
-    public void incrementViews(@PathVariable Long id) {
+    public ResponseEntity<Void> incrementViews(@PathVariable Long id) {
         Job job = jobService.getJobById(id);
-        if (job != null) {
-            job.setViews(job.getViews() + 1);
-            jobService.saveJob(job);
+        if (job == null) {
+            throw new ResourceNotFoundException("Job not found with id: " + id);
         }
+        job.setViews(job.getViews() + 1);
+        jobService.saveJob(job);
+        return ResponseEntity.ok().build();
     }
 }

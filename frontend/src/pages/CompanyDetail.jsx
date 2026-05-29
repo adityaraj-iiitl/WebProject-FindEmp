@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import JobCard from '../components/JobCard';
-import api from '../api/config';
+import { jobService } from '../services/jobService';
 import { Building2, ChevronLeft } from "lucide-react"
 
 const CompanyDetail = () => {
@@ -10,13 +10,13 @@ const CompanyDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get(`/jobs/company/${name}`)
-      .then(res => {
-        setJobs(res.data);
+    jobService.getJobsByCompany(name)
+      .then(data => {
+        setJobs(data || []);
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        alert(err.message || "Failed to load open positions.");
         setLoading(false);
       });
   }, [name]);
@@ -39,7 +39,9 @@ const CompanyDetail = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-20">Loading jobs...</div>
+        <div className="flex justify-center items-center py-20 w-full">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {jobs.map(job => (
