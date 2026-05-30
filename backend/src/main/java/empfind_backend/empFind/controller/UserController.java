@@ -22,7 +22,8 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody User loginRequest) {
-        User user = userService.login(loginRequest.getEmail(), loginRequest.getPassword()).orElse(null);
+        User user = userService.login(loginRequest.getEmail(), loginRequest.getPassword())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         return ResponseEntity.ok(user);
     }
 
