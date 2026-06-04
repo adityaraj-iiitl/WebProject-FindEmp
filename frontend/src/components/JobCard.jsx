@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { jobService } from '../services/jobService';
 import { savedJobService } from '../services/savedJobService';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { MapPin, DollarSign, Building2, Star } from "lucide-react"
 import ApplyModal from './ApplyModal';
 
 const JobCard = ({ job }) => {
@@ -46,60 +42,49 @@ const JobCard = ({ job }) => {
 
   return (
     <>
-      <Card className="group overflow-hidden transition-all hover:border-primary/50 hover:shadow-lg">
-        <CardHeader className="pb-4">
-          <div className="flex items-start justify-between">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/50 transition-colors group-hover:bg-primary/10">
-              <Building2 className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-primary" />
-            </div>
-            <div className="flex gap-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-8 w-8 text-muted-foreground hover:text-primary"
+      <div className="border border-gray-300 rounded p-5 bg-white flex flex-col justify-between hover:border-gray-400">
+        <div>
+          <div className="flex justify-between items-start">
+            <h3 className="text-lg font-bold text-gray-900">{job.title}</h3>
+            <div className="flex items-center gap-2">
+              <button 
+                className="h-8 w-8 text-gray-400 hover:text-yellow-500 bg-transparent border-0 cursor-pointer p-0"
                 onClick={handleSaveToggle}
               >
-                <Star className="h-5 w-5" />
-              </Button>
-              <Badge variant="secondary" className="bg-primary/5 text-primary">
+                ⭐
+              </button>
+              <span className="px-2 py-0.5 text-xs bg-gray-200 text-gray-700 rounded font-medium">
                 {job.type || 'Full-time'}
-              </Badge>
+              </span>
             </div>
           </div>
-          <CardTitle className="mt-4 text-xl group-hover:text-primary transition-colors">
-            {job.title}
-          </CardTitle>
-          <p className="text-sm font-medium text-muted-foreground">{job.company}</p>
-        </CardHeader>
-        
-        <CardContent className="pb-4">
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <MapPin className="h-4 w-4" />
-              {job.location}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <DollarSign className="h-4 w-4" />
-              {job.salary}
-            </div>
+          <p className="text-sm font-semibold text-blue-600 mt-1">{job.company}</p>
+          
+          <div className="flex flex-wrap gap-4 text-xs text-gray-500 mt-2">
+            <div>📍 {job.location}</div>
+            <div>💰 {job.salary}</div>
           </div>
-          <p className="mt-4 line-clamp-2 text-sm text-muted-foreground/80">
+          
+          <p className="mt-3 line-clamp-3 text-sm text-gray-600">
             {job.description}
           </p>
-        </CardContent>
+        </div>
 
-        <CardFooter className="pt-0">
+        <div className="mt-4 pt-4 border-t border-gray-200">
           {user && user.role === 'RECRUITER' ? (
-            <Button variant="outline" className="w-full cursor-not-allowed opacity-50" disabled>
+            <button className="text-xs text-gray-400 bg-gray-100 border border-gray-200 py-1.5 rounded cursor-not-allowed w-full text-center" disabled>
               Recruiter View
-            </Button>
+            </button>
           ) : (
-            <Button onClick={handleApplyClick} className="w-full gap-2">
+            <button 
+              onClick={handleApplyClick} 
+              className="text-xs text-white bg-blue-600 hover:bg-blue-700 py-1.5 rounded w-full text-center font-semibold cursor-pointer border-0"
+            >
               Apply Now
-            </Button>
+            </button>
           )}
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
 
       {isModalOpen && (
         <ApplyModal job={job} onClose={() => setIsModalOpen(false)} />

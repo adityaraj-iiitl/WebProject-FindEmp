@@ -32,11 +32,7 @@ const RecruiterDashboard = () => {
   const [viewingApplicant, setViewingApplicant] = useState(null);
   const [profilePicUrl, setProfilePicUrl] = useState(user?.profilePicUrl || '');
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
+  const fetchData = React.useCallback(() => {
     if (!user || !user.id) {
       return;
     }
@@ -68,7 +64,11 @@ const RecruiterDashboard = () => {
         alert(err.message || "Error fetching stats");
         setLoading(false);
       });
-  };
+  }, [user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const updateAppStatus = (appId, status) => {
     applicationService.updateApplicationStatus(appId, status)
@@ -624,7 +624,6 @@ const RecruiterDashboard = () => {
                           <>
                             <Button size="sm" variant="outline" className="h-8 text-accent border-accent/20 hover:bg-accent/5" onClick={() => {
                               updateAppStatus(app.id, 'ACCEPTED');
-                              // Also update local jobApps state for immediate feedback
                               setJobApps(jobApps.map(a => a.id === app.id ? { ...a, status: 'ACCEPTED' } : a));
                             }}>Accept</Button>
                             <Button size="sm" variant="ghost" className="h-8 text-destructive hover:bg-destructive/5" onClick={() => {

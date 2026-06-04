@@ -9,21 +9,7 @@ const Home = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const getUser = () => {
-    try {
-      const saved = localStorage.getItem('user');
-      return saved ? JSON.parse(saved) : null;
-    } catch (e) {
-      return null;
-    }
-  };
-  const user = getUser();
-
-  useEffect(() => {
-    fetchJobs();
-  }, []);
-
-  const fetchJobs = (keyword = '', location = '') => {
+  const fetchJobs = React.useCallback((keyword = '', location = '') => {
     setLoading(true);
     const serviceCall = (keyword || location)
       ? jobService.searchJobs(keyword, location)
@@ -39,7 +25,12 @@ const Home = () => {
       .finally(() => {
         setLoading(false);
       });
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex flex-col">

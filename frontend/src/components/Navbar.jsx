@@ -1,14 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button"
-import { Briefcase, User, LogOut, Search } from "lucide-react"
 
 const Navbar = () => {
   const getUser = () => {
     try {
       const saved = localStorage.getItem('user');
       return saved ? JSON.parse(saved) : null;
-    } catch (e) {
+    } catch {
       return null;
     }
   };
@@ -21,46 +19,41 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-md">
+    <nav className="w-full border-b border-gray-300 bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-white">
-            <Briefcase className="h-5 w-5" />
-          </div>
+        <Link to="/" className="text-xl font-bold text-blue-600">
           FindEmp
         </Link>
         
         <div className="hidden items-center gap-6 md:flex">
-          <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Browse Jobs</Link>
-          <Link to="/companies" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Companies</Link>
+          <Link to="/" className="text-sm font-medium text-gray-700 hover:text-blue-600">Browse Jobs</Link>
+          <Link to="/companies" className="text-sm font-medium text-gray-700 hover:text-blue-600">Companies</Link>
           {user?.role === 'RECRUITER' && (
-            <Link to="/recruiter" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Recruiter Panel</Link>
+            <Link to="/recruiter" className="text-sm font-medium text-gray-700 hover:text-blue-600">Recruiter Panel</Link>
           )}
-          <Link to="/add-job" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Post a Job</Link>
+          <Link to="/add-job" className="text-sm font-medium text-gray-700 hover:text-blue-600">Post a Job</Link>
         </div>
 
         <div className="flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-4">
-              <Link to="/profile" className="flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1.5 transition-colors hover:border-primary/50 hover:bg-primary/5">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 overflow-hidden text-[10px] font-bold text-primary">
-                  {user.profilePicUrl ? (
-                    <img src={user.profilePicUrl} alt={user.name || 'User'} className="h-full w-full object-cover" />
-                  ) : (
-                    (user.name || 'U').slice(0, 2).toUpperCase()
-                  )}
-                </div>
-                <span className="text-sm font-medium text-foreground">{user.name || 'Profile'}</span>
+              <Link to="/profile" className="text-sm font-medium text-gray-700 hover:text-blue-600">
+                Welcome, {user.name || 'User'}
               </Link>
-              <Button variant="ghost" size="icon" onClick={handleLogout} className="text-muted-foreground hover:text-destructive">
-                <LogOut className="h-5 w-5" />
-              </Button>
+              <button 
+                onClick={handleLogout} 
+                className="text-sm text-red-600 hover:underline font-semibold bg-transparent border-0 cursor-pointer p-0"
+              >
+                Logout
+              </button>
             </div>
           ) : (
-            <Button onClick={() => navigate('/login')} className="gap-2">
-              <User className="h-4 w-4" />
+            <button 
+              onClick={() => navigate('/login')} 
+              className="px-4 py-1.5 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700 cursor-pointer border-0"
+            >
               Login
-            </Button>
+            </button>
           )}
         </div>
       </div>

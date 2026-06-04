@@ -47,7 +47,7 @@ const AIChatbot = () => {
       };
       
       setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
+    } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I\'m having trouble connecting to my Gemini brain. Please try again later.' }]);
     } finally {
       setIsLoading(false);
@@ -58,43 +58,41 @@ const AIChatbot = () => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white shadow-lg shadow-primary/25 transition-all hover:scale-105 hover:shadow-xl hover:shadow-primary/30 ${
+        className={`fixed bottom-6 right-6 z-50 flex h-12 px-4 items-center justify-center rounded bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-0 cursor-pointer ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
       >
-        <MessageCircle className="h-6 w-6" />
+        <span className="mr-2">💬</span> Assistant
       </button>
 
       <div
-        className={`fixed bottom-6 right-6 z-50 w-full max-w-md transition-all duration-300 ${
+        className={`fixed bottom-6 right-6 z-50 w-full max-w-sm transition-all duration-300 ${
           isOpen
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-4 opacity-0"
         }`}
       >
-        <Card className="overflow-hidden border-primary/20 shadow-2xl shadow-primary/10">
-          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-primary to-accent p-4">
+        <Card className="overflow-hidden border border-gray-300 bg-white shadow-md">
+          <CardHeader className="flex flex-row items-center justify-between bg-blue-600 p-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-                <Sparkles className="h-5 w-5 text-white" />
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-blue-700 text-white font-bold">
+                🤖
               </div>
               <div>
-                <h3 className="font-semibold text-white">Career AI</h3>
-                <p className="text-xs text-white/80">Always here to help</p>
+                <h3 className="font-semibold text-white text-sm">Career AI</h3>
+                <p className="text-[10px] text-blue-200">Online</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={() => setIsOpen(false)}
-              className="h-8 w-8 text-white hover:bg-white/20 hover:text-white"
+              className="h-8 w-8 text-white bg-transparent border-0 cursor-pointer text-xl hover:text-gray-200"
             >
-              <X className="h-5 w-5" />
-            </Button>
+              ×
+            </button>
           </CardHeader>
 
           <CardContent className="p-0">
-            <div className="h-80 overflow-y-auto p-4">
+            <div className="h-80 overflow-y-auto p-4 bg-white">
               <div className="flex flex-col gap-4">
                 {messages.map((message, i) => (
                   <div
@@ -106,18 +104,18 @@ const AIChatbot = () => {
                     <div
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
                         message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-gradient-to-br from-primary/20 to-accent/20 text-primary"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-700"
                       }`}
                     >
-                      {message.role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                      {message.role === "user" ? '👤' : '🤖'}
                     </div>
                     <div className="flex flex-col gap-2 max-w-[80%]">
                       <div
-                        className={`rounded-2xl px-4 py-2.5 text-sm ${
+                        className={`rounded px-3 py-2 text-sm ${
                           message.role === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-foreground"
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-100 text-gray-800 border border-gray-300"
                         }`}
                       >
                         {message.content}
@@ -126,10 +124,10 @@ const AIChatbot = () => {
                       {message.jobs && message.jobs.length > 0 && (
                         <div className="flex flex-col gap-2 mt-2">
                           {message.jobs.map((job, j) => (
-                            <div key={j} className="rounded-lg border border-border bg-card p-3 text-xs">
+                            <div key={j} className="rounded border border-gray-300 bg-white p-3 text-xs">
                               <p className="font-bold">{job.title}</p>
-                              <p className="text-muted-foreground">{job.company} • {job.location}</p>
-                              <Button variant="link" className="p-0 h-auto mt-1 text-xs" onClick={() => window.location.href = `/job/${job.id}`}>View Details</Button>
+                              <p className="text-gray-500">{job.company} • {job.location}</p>
+                              <button className="p-0 h-auto mt-1 text-xs text-blue-600 hover:underline bg-transparent border-0 cursor-pointer text-left" onClick={() => window.location.href = `/job/${job.id}`}>View Details</button>
                             </div>
                           ))}
                         </div>
@@ -139,11 +137,11 @@ const AIChatbot = () => {
                 ))}
                 {isLoading && (
                   <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
-                      <Bot className="h-4 w-4" />
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-gray-200 text-gray-700">
+                      🤖
                     </div>
-                    <div className="bg-muted rounded-2xl px-4 py-2.5 text-sm animate-pulse">
-                      ...
+                    <div className="bg-gray-100 rounded px-3 py-2 text-sm border border-gray-300 animate-pulse">
+                      typing...
                     </div>
                   </div>
                 )}
@@ -151,13 +149,13 @@ const AIChatbot = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="border-t border-border px-4 py-3 bg-card">
+            <div className="border-t border-gray-300 px-4 py-3 bg-gray-50">
               <div className="mb-3 flex flex-wrap gap-2">
                 {messages[messages.length-1]?.suggestions?.map((s, i) => (
                   <button
                     key={i}
                     onClick={() => handleSend(s)}
-                    className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                    className="rounded border border-gray-300 bg-white px-3 py-1 text-xs text-gray-600 hover:border-blue-600 hover:text-blue-600 cursor-pointer"
                   >
                     {s}
                   </button>
@@ -165,17 +163,22 @@ const AIChatbot = () => {
               </div>
 
               <div className="flex gap-2">
-                <Input
+                <input
+                  type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
                   placeholder="Ask me anything..."
-                  className="flex-1"
+                  className="flex-1 px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 bg-white text-gray-800"
                   disabled={isLoading}
                 />
-                <Button onClick={() => handleSend()} size="icon" className="shrink-0" disabled={isLoading || !input.trim()}>
-                  <Send className="h-4 w-4" />
-                </Button>
+                <button 
+                  onClick={() => handleSend()} 
+                  className="px-4 py-1.5 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700 cursor-pointer border-0 disabled:opacity-50" 
+                  disabled={isLoading || !input.trim()}
+                >
+                  Send
+                </button>
               </div>
             </div>
           </CardContent>

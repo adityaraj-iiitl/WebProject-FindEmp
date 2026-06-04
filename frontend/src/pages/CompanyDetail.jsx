@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import JobCard from '../components/JobCard';
 import { jobService } from '../services/jobService';
-import { Building2, ChevronLeft } from "lucide-react"
 
 const CompanyDetail = () => {
   const { name } = useParams();
@@ -22,19 +21,18 @@ const CompanyDetail = () => {
   }, [name]);
 
   return (
-    <div className="container mx-auto max-w-7xl px-6 py-12">
-      <Link to="/companies" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-8">
-        <ChevronLeft className="h-4 w-4" />
-        Back to Companies
+    <div className="container mx-auto max-w-7xl px-6 py-8">
+      <Link to="/companies" className="text-sm text-blue-600 hover:underline mb-6 inline-block">
+        ← Back to Companies
       </Link>
 
-      <div className="flex items-center gap-6 mb-12">
-        <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-white">
-          <Building2 className="h-10 w-10" />
+      <div className="flex items-center gap-4 mb-8">
+        <div className="flex h-16 w-16 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 text-2xl font-bold">
+          🏢
         </div>
         <div>
-          <h1 className="text-4xl font-bold text-foreground">{decodeURIComponent(name)}</h1>
-          <p className="mt-2 text-muted-foreground">{jobs.length} Open Positions</p>
+          <h1 className="text-2xl font-bold text-gray-900">{decodeURIComponent(name)}</h1>
+          <p className="text-sm text-gray-500 mt-1">{jobs.length} Open Positions</p>
         </div>
       </div>
 

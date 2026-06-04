@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { companyService } from '../services/companyService';
 import { jobService } from '../services/jobService';
-import { Briefcase, Send, Building2, MapPin, DollarSign } from "lucide-react"
 
 const AddJob = () => {
   const navigate = useNavigate();
@@ -53,109 +48,91 @@ const AddJob = () => {
   };
 
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-64px)] items-center justify-center px-6 py-12">
-      <Card className="w-full max-w-2xl border-primary/10 shadow-xl">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Briefcase className="h-6 w-6" />
-            </div>
+    <div className="container mx-auto flex min-h-[calc(100vh-64px)] items-center justify-center px-6 py-12 bg-gray-50">
+      <div className="w-full max-w-2xl border border-gray-300 bg-white p-8 rounded shadow-sm">
+        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-bold text-gray-900">Post a New Job</h2>
+          <p className="text-sm text-gray-500 mt-1">Fill in the details to create a job listing</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <CardTitle className="text-2xl font-bold">Post a New Job</CardTitle>
-              <CardDescription>Reach thousands of qualified candidates</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="title">Job Title</Label>
-                <div className="relative">
-                  <Briefcase className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input 
-                    id="title"
-                    required 
-                    className="pl-10"
-                    placeholder="e.g. Senior Java Developer"
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="company">Company</Label>
-                <div className="relative">
-                  <Building2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <select 
-                    id="company"
-                    required
-                    className="flex h-9 w-full rounded-md border border-input bg-background pl-10 pr-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    value={formData.company}
-                    onChange={(e) => {
-                      const selected = companies.find(c => c.name === e.target.value);
-                      setFormData({...formData, company: e.target.value, location: selected?.location || ''});
-                    }}
-                  >
-                    {companies.length > 0 ? companies.map(c => (
-                      <option key={c.id} value={c.name}>{c.name}</option>
-                    )) : (
-                      <option value="">No companies added yet</option>
-                    )}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input 
-                    id="location"
-                    required 
-                    className="pl-10"
-                    placeholder="e.g. Mumbai or Remote"
-                    value={formData.location}
-                    onChange={(e) => setFormData({...formData, location: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="salary">Salary Range</Label>
-                <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input 
-                    id="salary"
-                    className="pl-10"
-                    placeholder="e.g. ₹10 LPA - ₹15 LPA"
-                    value={formData.salary}
-                    onChange={(e) => setFormData({...formData, salary: e.target.value})}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Job Description</Label>
-              <textarea 
-                id="description"
-                required
-                className="min-h-[150px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                placeholder="Describe the responsibilities, requirements, and benefits..."
-                value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
+              <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="title">Job Title</label>
+              <input 
+                id="title"
+                required 
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 bg-white text-gray-800"
+                placeholder="e.g. Senior Java Developer"
+                value={formData.title}
+                onChange={(e) => setFormData({...formData, title: e.target.value})}
               />
             </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="company">Company</label>
+              <select 
+                id="company"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 bg-white text-gray-800"
+                value={formData.company}
+                onChange={(e) => {
+                  const selected = companies.find(c => c.name === e.target.value);
+                  setFormData({...formData, company: e.target.value, location: selected?.location || ''});
+                }}
+              >
+                {companies.length > 0 ? companies.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                )) : (
+                  <option value="">No companies added yet</option>
+                )}
+              </select>
+            </div>
+          </div>
 
-            <Button type="submit" className="w-full gap-2 py-6 text-lg font-semibold">
-              <Send className="h-5 w-5" />
-              Publish Job Listing
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="location">Location</label>
+              <input 
+                id="location"
+                required 
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 bg-white text-gray-800"
+                placeholder="e.g. Mumbai or Remote"
+                value={formData.location}
+                onChange={(e) => setFormData({...formData, location: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="salary">Salary Range</label>
+              <input 
+                id="salary"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 bg-white text-gray-800"
+                placeholder="e.g. ₹10 LPA - ₹15 LPA"
+                value={formData.salary}
+                onChange={(e) => setFormData({...formData, salary: e.target.value})}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="description">Job Description</label>
+            <textarea 
+              id="description"
+              required
+              className="min-h-[120px] w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 bg-white text-gray-800"
+              placeholder="Describe the responsibilities, requirements, and benefits..."
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded text-sm mt-2 cursor-pointer border-0"
+          >
+            Publish Job Listing
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

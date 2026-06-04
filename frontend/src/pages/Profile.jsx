@@ -12,11 +12,8 @@ import {
   Mail, 
   Briefcase, 
   FileText, 
-  Plus, 
-  Trash2, 
   Save, 
   CheckCircle2, 
-  TrendingUp, 
   Eye, 
   Calendar, 
   Star,
@@ -36,11 +33,6 @@ const Profile = () => {
       navigate('/login');
     }
   }, [user, navigate]);
-
-  if (!user) {
-    return <div className="py-20 text-center">Redirecting to login...</div>;
-  }
-
 
   const [stats, setStats] = useState({
     applicationsSent: 0,
@@ -114,12 +106,16 @@ const Profile = () => {
 
   const completionRate = () => {
     let count = 0;
-    if (user.title) count += 25;
-    if (user.bio) count += 25;
-    if (user.skills) count += 25;
-    if (user.resumeUrl) count += 25;
+    if (user?.title) count += 25;
+    if (user?.bio) count += 25;
+    if (user?.skills) count += 25;
+    if (user?.resumeUrl) count += 25;
     return count;
   };
+
+  if (!user) {
+    return <div className="py-20 text-center">Redirecting to login...</div>;
+  }
 
   if (loading) return <div className="py-20 text-center">Loading Profile...</div>;
 
@@ -131,17 +127,16 @@ const Profile = () => {
     <div className="container mx-auto max-w-7xl px-6 py-12">
       <div className="grid gap-8 lg:grid-cols-3">
         
-        {/* Left Column: User Card & Profile Strength */}
         <div className="space-y-6">
           <Card className="overflow-hidden">
-            <div className="h-32 bg-gradient-to-r from-primary to-accent" />
+            <div className="h-32 bg-gray-200 border-b border-gray-300" />
             <CardContent className="relative px-6 pb-6 pt-0">
               <div className="absolute -top-12 left-6">
-                <div className="group relative flex h-24 w-24 items-center justify-center rounded-2xl bg-background border-4 border-background shadow-xl overflow-hidden cursor-pointer">
+                <div className="group relative flex h-24 w-24 items-center justify-center rounded border-4 border-white bg-gray-100 overflow-hidden cursor-pointer shadow-sm">
                   {formData.profilePicUrl ? (
                     <img src={formData.profilePicUrl} alt={user.name} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-muted text-primary">
+                    <div className="flex h-20 w-20 items-center justify-center rounded bg-gray-200 text-gray-600">
                       <User className="h-10 w-10" />
                     </div>
                   )}
@@ -204,10 +199,7 @@ const Profile = () => {
           </Card>
         </div>
 
-        {/* Right Column: Content Tabs */}
         <div className="lg:col-span-2 space-y-6">
-          
-          {/* Tab Navigation */}
           <div className="flex border-b border-border">
             <button 
               onClick={() => setActiveTab('overview')}
@@ -234,7 +226,6 @@ const Profile = () => {
 
           {activeTab === 'overview' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              {/* Stats Grid */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-xl border bg-card p-4">
                   <p className="text-xs text-muted-foreground">Applications</p>
@@ -310,7 +301,6 @@ const Profile = () => {
                   )}
                 </CardHeader>
                 <CardContent>
-                  {/* ... Existing content logic will go here in next step ... */}
               {message && <div className="mb-4 text-sm text-accent font-medium">{message}</div>}
               
               {isEditing ? (

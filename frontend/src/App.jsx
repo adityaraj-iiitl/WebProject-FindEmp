@@ -6,6 +6,7 @@ import AddJob from './pages/AddJob';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AIChatbot from './components/AIChatbot';
+import Footer from './components/Footer';
 
 import Companies from './pages/Companies';
 import CompanyDetail from './pages/CompanyDetail';
@@ -15,18 +16,21 @@ import RecruiterDashboard from './components/RecruiterDashboard';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/recruiter" element={<RecruiterDashboard />} />
-          <Route path="/companies" element={<Companies />} />
-          <Route path="/company/:name" element={<CompanyDetail />} />
-          <Route path="/add-job" element={<AddJob />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
+      <div className="min-h-screen bg-background flex flex-col justify-between">
+        <div>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/recruiter" element={<RecruiterDashboard />} />
+            <Route path="/companies" element={<Companies />} />
+            <Route path="/company/:name" element={<CompanyDetail />} />
+            <Route path="/add-job" element={<AddJob />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </div>
+        <Footer />
         <AIChatbot />
       </div>
     </Router>
