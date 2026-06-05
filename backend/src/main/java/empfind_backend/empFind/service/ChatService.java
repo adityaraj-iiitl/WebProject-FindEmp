@@ -113,7 +113,7 @@ public class ChatService {
             headers.set("X-Title", "FindEmp Job Portal");
 
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", "google/gemini-2.0-flash-001");
+            requestBody.put("model", "google/gemini-2.5-flash");
             
             List<Map<String, String>> messages = new ArrayList<>();
             messages.add(Map.of("role", "user", "content", prompt));
