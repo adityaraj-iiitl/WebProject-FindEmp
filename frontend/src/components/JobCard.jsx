@@ -61,8 +61,8 @@ const JobCard = ({ job }) => {
           <p className="text-sm font-semibold text-blue-600 mt-1">{job.company}</p>
           
           <div className="flex flex-wrap gap-4 text-xs text-gray-500 mt-2">
-            <div>📍 {job.location}</div>
-            <div>💰 {job.salary}</div>
+            <div>{job.location}</div>
+            <div>{job.salary}</div>
           </div>
           
           <p className="mt-3 line-clamp-3 text-sm text-gray-600">
