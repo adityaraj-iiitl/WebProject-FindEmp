@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { jobService } from '../services/jobService';
-import { savedJobService } from '../services/savedJobService';
 import ApplyModal from './ApplyModal';
 
 const JobCard = ({ job }) => {
@@ -26,20 +25,6 @@ const JobCard = ({ job }) => {
     setIsModalOpen(true);
   };
 
-  const handleSaveToggle = () => {
-    if (!user) {
-      alert("Please login to save jobs!");
-      return;
-    }
-    savedJobService.toggleSavedJob(user.id, job.id)
-      .then(status => {
-        alert(status === 'SAVED' ? "Job Saved!" : "Job Removed!");
-      })
-      .catch(err => {
-        alert(err.message || "Failed to update saved job.");
-      });
-  };
-
   return (
     <>
       <div className="border border-gray-300 rounded p-5 bg-white flex flex-col justify-between hover:border-gray-400">
@@ -47,12 +32,6 @@ const JobCard = ({ job }) => {
           <div className="flex justify-between items-start">
             <h3 className="text-lg font-bold text-gray-900">{job.title}</h3>
             <div className="flex items-center gap-2">
-              <button 
-                className="h-8 w-8 text-gray-400 hover:text-yellow-500 bg-transparent border-0 cursor-pointer p-0"
-                onClick={handleSaveToggle}
-              >
-                ⭐
-              </button>
               <span className="px-2 py-0.5 text-xs bg-gray-200 text-gray-700 rounded font-medium">
                 {job.type || 'Full-time'}
               </span>
