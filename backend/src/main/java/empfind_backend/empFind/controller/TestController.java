@@ -16,4 +16,9 @@ public class TestController {
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("OK");
     }
+
+    @GetMapping("/")
+    public ResponseEntity<String> root() {
+        return ResponseEntity.ok("OK");
+    }
 }
